@@ -29,7 +29,7 @@ app.get('/get-video', async (req, res) => {
     const videoFilePath = path.join(__dirname, 'public', 'video.mp4');
     fs.writeFileSync(videoFilePath, pp.data);
 
-    const videoFileUrl = `https://test-production-e28b.up.railway.app`;
+    const videoFileUrl = `https://test-production-e28b.up.railway.app/video.mp4`;
     res.json({ videoFileUrl });
   } catch (error) {
     console.error('Error fetching data from Rubish API:', error);
