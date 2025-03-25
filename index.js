@@ -4,7 +4,9 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 const port = 3000;
-
+app.get("/", (req,res)=>{
+  res.send("ok")
+})
 // Make sure Express serves static files from the "public" directory
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -19,7 +21,7 @@ app.get('/get-video', async (req, res) => {
   try {
     // Make the Axios request to Rubish API
     const response = await axios.get(apiUrl);
-    const videoMediaUrl = response.data.videoInfo.medias.url;
+    const videoMediaUrl = response.data.videoInfo.medias[0].url;
 
     // Example path where the video will be saved
     const videoFilePath = path.join(__dirname, 'public', 'video.mp4'); 
