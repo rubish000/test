@@ -33,12 +33,12 @@ app.get('/get-video', async (req, res) => {
       res.sendFile(videoFilePath);
     } else {
       // If the video isn't found, send the constructed URL for the client to use
-      const videoFileUrl = `http://${req.hostname}/video.mp4`; // Video URL from public directory
+      const videoFileUrl = `https://ytb-apiz-69-seven.vercel.app/video.mp4`; // Video URL from public directory
       res.json({ videoFileUrl });
     }
   } catch (error) {
     console.error('Error fetching data from Rubish API:', error);
-    res.status(500).send('Error fetching data');
+    res.status(500).send(error);
   }
 });
 
