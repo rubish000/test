@@ -1,0 +1,18 @@
+{
+  "name": "youtube-video-server",
+  "version": "1.0.0",
+  "description": "A server that serves YouTube videos via Rubish API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "express": "^4.17.3",
+    "fs-extra": "^10.0.0",
+    "path": "^0.12.7"
+  },
+  "engines": {
+    "node": "16.x"
+  }
+}
