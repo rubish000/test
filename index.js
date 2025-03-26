@@ -80,8 +80,7 @@ app.get('/get-audio', async (req, res) => {
     fs.writeFileSync(audioFilePath, audioData.data);
 
     const audioFileUrl = `https://test-production-e28b.up.railway.app/${randomAudioFileName}`;
-    //res.json({ audioFileUrl });
-    res.status(200).json({ success: true, downloadLink:videoFileUrl,quality:"360",title:progressResponse.title ,author: "Dip To"});
+    res.json({ audioFileUrl });
   } catch (error) {
     console.error('Error fetching audio:', error);
     res.status(500).json({ error: 'Failed to fetch audio' });
