@@ -59,7 +59,7 @@ app.get('/get-audio', async (req, res) => {
     try {
         if (!req.query.url) return res.status(400).json({ error: 'Missing video URL' });
         const audioFileUrl = await fetchMedia(req.query.url, 'audio');
-        res.json({ success: true, downloadLink: audioFileUrl, quality: '360p', title: 'Unknown', author: 'RUbish' });
+        res.json({ success: true,audioFileUrl, quality: '360p', title: 'Unknown', author: 'RUbish' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
