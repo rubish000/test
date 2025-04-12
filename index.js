@@ -38,6 +38,17 @@ async function fetchMedia(videoUrl, type) {
         const filePath = path.join(__dirname, 'public', randomFileName);
         fs.writeFileSync(filePath, mediaData.data);
 
+        // Auto delete file after 5 minutes
+        setTimeout(() => {
+            fs.unlink(filePath, err => {
+                if (err) {
+                    console.error(`Failed to delete ${randomFileName}:`, err.message);
+                } else {
+                    console.log(`${randomFileName} deleted after 5 minutes`);
+                }
+            });
+        }, 5 * 60 * 1000); // 5 minutes
+
         return `https://test-production-e28b.up.railway.app/${randomFileName}`;
     } catch (error) {
         console.error(`Error fetching ${type}:`, error.message);
@@ -59,7 +70,7 @@ app.get('/get-audio', async (req, res) => {
     try {
         if (!req.query.url) return res.status(400).json({ error: 'Missing video URL' });
         const audioFileUrl = await fetchMedia(req.query.url, 'audio');
-        res.json({ success: true,audioFileUrl, quality: '360p', title: 'Unknown', author: 'RUbish' });
+        res.json({ success: true, audioFileUrl, quality: '360p', title: 'Unknown', author: 'RUbish' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
