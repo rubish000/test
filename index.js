@@ -7,7 +7,6 @@ const app = express();
 const port = 3000;
 
 const publicDir = path.join(__dirname, 'public');
-
 if (!fs.existsSync(publicDir)) {
     fs.mkdirSync(publicDir, { recursive: true });
 }
@@ -27,9 +26,7 @@ async function fetchMedia(videoUrl, type, req) {
     const apiUrl = `https://www.rubish.infy.uk/rubish/youtube-search?query=${encodeURIComponent(videoUrl)}&apikey=${apiKey}`;
 
     const response = await axios.get(apiUrl, {
-        headers: {
-            'User-Agent': 'Mozilla/5.0'
-        }
+        headers: { 'User-Agent': 'Mozilla/5.0' }
     });
 
     const media = response.data.videoInfo.medias.find(media => media.type === type);
@@ -38,7 +35,7 @@ async function fetchMedia(videoUrl, type, req) {
     const randomFileName = generateRandomFileName(type === 'video' ? 'mp4' : 'mp3');
     const filePath = path.join(publicDir, randomFileName);
 
-    setImmediate(() => {
+    await new Promise((resolve, reject) => {
         axios({
             method: 'get',
             url: media.url,
@@ -49,24 +46,25 @@ async function fetchMedia(videoUrl, type, req) {
             mediaStream.data.pipe(writer);
 
             writer.on('finish', () => {
-                console.log(`${randomFileName} downloaded successfully.`);
+                setTimeout(() => {
+                    fs.unlink(filePath, err => {
+                        if (err) {
+                            console.error(`Failed to delete ${randomFileName}:`, err.message);
+                        } else {
+                            console.log(`${randomFileName} deleted after 5 minutes`);
+                        }
+                    });
+                }, 5 * 60 * 1000);
+                resolve();
             });
 
-            writer.on('error', (err) => {
+            writer.on('error', err => {
                 console.error(`Error writing file ${randomFileName}:`, err.message);
+                reject(new Error('Failed to write file'));
             });
-
-            setTimeout(() => {
-                fs.unlink(filePath, err => {
-                    if (err) {
-                        console.error(`Failed to delete ${randomFileName}:`, err.message);
-                    } else {
-                        console.log(`${randomFileName} deleted after 5 minutes`);
-                    }
-                });
-            }, 5 * 60 * 1000);
-        }).catch(error => {
-            console.error('Error during file download:', error.message);
+        }).catch(err => {
+            console.error('Error downloading media:', err.message);
+            reject(new Error('Failed to download media'));
         });
     });
 
